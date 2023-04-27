@@ -1,0 +1,35 @@
+{
+  "name": "livelocal",
+  "version": "1.0.0",
+  "description": "MERN stack web application for local bands to share their music and upcoming gigs",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js --ignore client",
+    "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm start\"",
+    "install": "cd server && npm i && cd ../client && npm i",
+    "seed": "cd server && npm run seed",
+    "build": "cd client && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mqas1/livelocal.git"
+  },
+  "keywords": [
+    "MERN",
+    "GraphQL",
+    "React",
+    "Node.js",
+    "Express.js",
+    "MongoDB",
+    "Mongoose"
+  ],
+  "author": "Morgan Qasabian",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mqas1/livelocal/issues"
+  },
+  "homepage": "https://github.com/mqas1/livelocal#readme",
+  "devDependencies": {
+    "concurrently": "^5.3.0"
+  }
+}
