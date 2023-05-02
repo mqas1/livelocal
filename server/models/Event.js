@@ -67,12 +67,9 @@ const eventSchema = new Schema(
       type: String,
     },
     comments: [commentSchema],
-    ticketsAvailable: {
-      type: Number,
-    },
-    ticketPrice: {
-      type: Number,
-      default: 0,
+    tickets: {
+      type: Schema.Types.ObjectId,
+      ref: 'Ticket',
     },
     attendees: [
       {
@@ -81,7 +78,18 @@ const eventSchema = new Schema(
       }
     ]
   },
+  {
+    toJSON: {
+      virtuals: true,
+      getters: true,
+    },
+    id: false,
+  },
 );
+
+eventSchema.virtual('attendanceCount').get(function () {
+  return this.attendees.length;
+});
 
 const Event = model('Event', eventSchema);
 

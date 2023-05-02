@@ -23,7 +23,6 @@ const userSchema = new Schema (
     username: {
       type: String,
       required: true,
-      unique: true,
     },
     email: {
       type: String,
@@ -34,6 +33,7 @@ const userSchema = new Schema (
     password: {
       type: String,
       required: true,
+      minLength: 5,
     },
     location: locationSchema,
     userAvatar: {
@@ -54,10 +54,10 @@ const userSchema = new Schema (
         ref: 'Artist',
       },
     ],
-    tickets: [
+    events: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Ticket',
+        ref: 'Event',
       },
     ],
     orders: [
@@ -66,6 +66,13 @@ const userSchema = new Schema (
         ref: 'Order',
       },
     ],
+  },
+  {
+    toJSON: {
+      virtuals: true,
+      getters: true,
+    },
+    id: false,
   },
 );
 
@@ -83,6 +90,14 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.isCorrectPassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
+
+userSchema.virtual('savedArtistCount').get(function () {
+  return this.savedArtists.length;
+});
+
+userSchema.virtual('eventCount').get(function () {
+  return this.events.length;
+});
 
 const User = model('User', userSchema);
 
