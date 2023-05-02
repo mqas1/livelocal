@@ -2,15 +2,13 @@ const { Schema, model } = require('mongoose');
 
 const ticketSchema = new Schema(
   {
-    eventId: {
+    event: {
       type: Schema.Types.ObjectId,
       ref: 'Event',
       required: true,
     },
     price: {
       type: Number,
-      required: true,
-      min: 0.99
     },
     quantity: {
       type: Number,

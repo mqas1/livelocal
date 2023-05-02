@@ -37,8 +37,22 @@ const artistSchema = new Schema(
         ref: 'Event',
       },
     ],
-  }  
+  },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    id: false,
+  },
 );
+
+artistSchema.virtual('followerCount').get(function () {
+  return this.followedBy.length;
+});
+
+artistSchema.virtual('eventCount').get(function () {
+  return this.events.length;
+});
 
 const Artist = model('Artist', artistSchema);
 

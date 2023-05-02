@@ -29,9 +29,10 @@ const commentSchema = new Schema(
       required: true,
       maxLength: 280,
     },
-    userId: {
+    user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
+      require: true,
     },
     createdAt: {
       type: Date,
@@ -50,11 +51,13 @@ const commentSchema = new Schema(
 
 const eventSchema = new Schema(
   {
-    artistId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Artist',
-      required: true,
-    },
+    artists: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Artist',
+        required: true,
+      }
+    ],
     description: {
       type: String,
       required: true,
