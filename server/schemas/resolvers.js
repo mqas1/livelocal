@@ -138,7 +138,7 @@ const resolvers = {
 
         events.comments.sort((a, b) => b.createdAt - a.createdAt);
 
-        return event;
+        return events;
     }
   },
   Mutation: {
