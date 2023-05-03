@@ -126,20 +126,9 @@ const resolvers = {
         return event;
     },
     events: async () => {
-      const events =  await Event
-        .find({})
-        .populate('artists')
-        .populate('comments.user')
-        .populate('tickets')
-        .populate({ 
-          path: 'attendees', 
-          sort: { username: 1 } 
-        });
-
-        events.comments.sort((a, b) => b.createdAt - a.createdAt);
-
-        return events;
-    }
+      return await Event.find({}).populate('artists')
+        .populate('tickets');
+    },
   },
   Mutation: {
     login: async (parent, { email, password }) => {
