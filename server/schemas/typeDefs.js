@@ -3,6 +3,8 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql`
   scalar JSON  
 
+  scalar Date
+
   type GeoJSON {
     type: String
     coordinates: [JSON]
@@ -52,15 +54,15 @@ const typeDefs = gql`
     _id: ID
     commentBody: String!
     user: User!
-    createdAt: String
+    createdAt: Date
   }
 
   type Event {
     _id: ID
-    artist: [Artist]!
+    artists: [Artist!]
     description: String!
     venue: Venue
-    date: String
+    date: Date!
     startTime: String
     comments: [Comment]
     tickets: Ticket
@@ -77,7 +79,7 @@ const typeDefs = gql`
 
   type Order {
     _id: ID
-    purchaseDate: String
+    purchaseDate: Date
     tickets: [Ticket]
   }
 
@@ -99,13 +101,13 @@ const typeDefs = gql`
   }
   
   input EventInput {
-    artists: [ID]!
+    artists: [ID!]
     description: String!
     venueName: String!
     venueAddress: String
     type: String
     coordinates: [JSON]
-    date: String
+    date: Date!
     startTime: String
   }
   
@@ -120,18 +122,17 @@ const typeDefs = gql`
 
   input UpdateArtistInput {
     artistName: String
-    admins: [User]
+    admins: [ID]
     artistBio: String
-    genre: String!
+    genre: String
     artistAvatar: String
     artistCover: String
   }
 
   input UpdateEventInput {
-    artist: [ID]
+    artists: [ID]
     description: String
-    venue: Venue
-    date: String
+    date: Date
     startTime: String
     venueName: String
     venueAddress: String
@@ -142,21 +143,21 @@ const typeDefs = gql`
     me: User
     user(id: ID!): User
     artist(_id: ID!): Artist
-    filterArtist(artistName: String, genre: String): [Artist]
+    filterArtists(artistName: String, genre: String): [Artist]
     artists: [Artist]
     event(_id: ID!): Event
     events: [Event]
     order(_id: ID!): Order
-    checkout(tickets: [ID]!): Checkout
+    checkout(tickets: [ID!]): Checkout
   }
   
   type Mutation {
-    addUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
+    addUser(username: String!, email: String!, password: String!): Auth
     addArtist(input: ArtistInput): Artist
     addEvent(input: EventInput): Event
     addTicket(eventId: ID!, price: Float, quantity: Int): Event
-    addOrder(tickets: [ID]!): Order
+    addOrder(tickets: [ID!]): Order
     updateUser(input: UpdateUserInput): User
     updateArtist(input: UpdateArtistInput): Artist
     updateEvent(input: UpdateEventInput): Event

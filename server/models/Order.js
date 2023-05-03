@@ -1,12 +1,10 @@
 const { Schema, model } = require('mongoose');
-const dateFormat = require('../utils/dateFormat');
 
 const orderSchema = new Schema(
   {
     purchaseDate: {
       type: Date,
       default: Date.now,
-      get: v => dateFormat(v),
     },
     tickets: [
       {
@@ -14,13 +12,6 @@ const orderSchema = new Schema(
         ref: 'Ticket',
       },
     ],
-  },
-  {
-    toJSON: {
-      virtuals: true,
-      getters: true,
-    },
-    id: false,
   },
 );
 
