@@ -209,6 +209,11 @@ export const QUERY_EVENTS = gql`
       }
       date
       startTime
+      tickets {
+        _id
+        price
+        quantity
+      }
       attendanceCount
     }
   }
