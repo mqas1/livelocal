@@ -1,5 +1,4 @@
 const { Schema, model } = require('mongoose');
-const dateFormat = require('../utils/dateFormat');
 
 const venueSchema = new Schema (
   {
@@ -31,21 +30,13 @@ const commentSchema = new Schema(
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
       require: true,
+      ref: 'User',
     },
     createdAt: {
       type: Date,
       default: Date.now,
-      get: v => dateFormat(v),
     }
-  },
-  {
-    toJSON: {
-      virtuals: true,
-      getters: true,
-    },
-    id: false,
   },
 );
 
@@ -54,8 +45,8 @@ const eventSchema = new Schema(
     artists: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Artist',
         required: true,
+        ref: 'Artist',
       }
     ],
     description: {
@@ -64,7 +55,8 @@ const eventSchema = new Schema(
     },
     venue: venueSchema,
     date: {
-      type: String,
+      type: Date,
+      required: true,
     },
     startTime: {
       type: String,
@@ -84,7 +76,6 @@ const eventSchema = new Schema(
   {
     toJSON: {
       virtuals: true,
-      getters: true,
     },
     id: false,
   },

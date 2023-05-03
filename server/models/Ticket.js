@@ -4,8 +4,8 @@ const ticketSchema = new Schema(
   {
     event: {
       type: Schema.Types.ObjectId,
-      ref: 'Event',
       required: true,
+      ref: 'Event',
     },
     price: {
       type: Number,
