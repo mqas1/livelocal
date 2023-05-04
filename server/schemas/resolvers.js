@@ -1,37 +1,10 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { User, Artist, Event, Ticket, Order } = require('../models');
+const { User, Artist, Event } = require('../models');
 const { signToken } = require('../utils/auth');
 const { GraphQLJSON } = require('graphql-type-json');
-const { GraphQLScalarType, Kind } = require('graphql');
-
-const dateScalar = new GraphQLScalarType({
-  name: 'Date',
-  description: 'Date custom scalar type',
-  serialize(value) {
-    if (value instanceof Date) {
-      return value.getTime(); 
-    }
-    throw Error('GraphQL Date Scalar serializer expected a `Date` object');
-  },
-  parseValue(value) {
-    if (typeof value === 'number') {
-      return new Date(value); 
-    }
-    throw new Error('GraphQL Date Scalar parser expected a `number`');
-  },
-  parseLiteral(ast) {
-    if (ast.kind === Kind.INT) {
-    
-      return new Date(parseInt(ast.value, 10));
-    }
-  
-    return null;
-  },
-});
 
 const resolvers = {
   JSON: GraphQLJSON,
-  Date: dateScalar,
   Query: {
     me: async (parent, args, context) => {
       if (context.user) {
@@ -68,29 +41,35 @@ const resolvers = {
       }
       throw new AuthenticationError('You need to be logged in!');
     },
-    user: async (parent, { userId }) => {
-      return await User
-        .findOne({ _id: userId })
-        .populate({ 
-          path: 'savedArtists',
-          sort: { artistName: 1 },
-        })
-        .populate({ 
-          path: 'events',
-          populate: {
-            path: 'artists'
-          },
-          sort: { date: -1 }, 
-        });
+    user: async (parent, { userId }, context) => {
+      if(context.user){
+        return await User
+          .findOne({ userId })
+          .populate({ 
+            path: 'savedArtists',
+            sort: { artistName: 1 },
+          })
+          .populate({ 
+            path: 'events',
+            populate: {
+              path: 'artists'
+            },
+            sort: { date: -1 }, 
+          });
+      }
+      throw new AuthenticationError('Not logged in');
     },
-    artist: async (parent, { artistId }) => {
-      return await Artist
-        .findOne( {_id: artistId} )
-        .populate('followedBy')
-        .populate({ 
-          path: 'events',
-          sort: { date: -1 }
-        });
+    artist: async (parent, { artistId }, context) => {
+      if(context.user) {
+        return await Artist
+          .findOne({ artistId })
+          .populate('followedBy')
+          .populate({ 
+            path: 'events',
+            sort: { date: -1 }
+          });
+      }
+      throw new AuthenticationError('Not logged in');
     },
     filterArtists: async (parent, { artistName, genre }) => {
       const params = {};
@@ -110,24 +89,30 @@ const resolvers = {
     artists: async () => {
       return await Artist.find({}).sort({ artistName: 1 });
     },
-    event: async (parent, { eventId }) => {
-      const event =  await Event
-        .findOne({ _id: eventId })
-        .populate('artists')
-        .populate('comments.user')
-        .populate('tickets')
-        .populate({ 
-          path: 'attendees', 
-          sort: { username: 1 } 
-        });
+    event: async (parent, { eventId }, context) => {
+      if(context.user) {
+        const event =  await Event
+          .findOne({ eventId })
+          .populate('artists')
+          .populate({ 
+            path: 'comments',
+            select: 'user',
+          })
+          .populate('tickets')
+          .populate({ 
+            path: 'attendees', 
+            sort: { username: 1 } 
+          });
 
         event.comments.sort((a, b) => b.createdAt - a.createdAt);
 
         return event;
+      }
+      throw new AuthenticationError('Not logged in');
     },
     events: async () => {
       return await Event.find({}).populate('artists')
-        .populate('tickets');
+        .populate('tickets').sort({ date: -1 });
     },
   },
   Mutation: {
@@ -153,7 +138,90 @@ const resolvers = {
 
       return { token, user };
     },
-  }
+    updateUser: async (parent, { input }, context) => {
+      if (context.user) {
+        return await User.findByIdAndUpdate(input.userId, input, { new: true, runValidators: true, });
+      }
+      throw new AuthenticationError('Not logged in');
+    },
+    addArtist: async (parent, { input }, context) => {
+      if (context.user) {
+        const newArtist = await Artist.create(input);
+
+        await User.findByIdAndUpdate(
+          context.user._id,
+          { $addToSet: { artistAdmin: newArtist._id } },
+          { new: true, runValidators: true }
+        );
+        
+        return newArtist;
+      }
+      throw new AuthenticationError('Not logged in');
+    },
+    updateArtist: async (parent, { input }, context) => {
+      if (context.user) {
+        return await Artist.findByIdAndUpdate(input.artistId, input, { new: true });
+      }
+      throw new AuthenticationError('Not logged in');
+    },
+    updateArtistAdmins: async (parent, { artistId, admins }, context) => {
+      if(context.user) {
+        const updatedArtist = await Artist.findByIdAndUpdate(
+          artistId,
+          { $addToSet: { admins:{ $each: admins } } },
+          { new: true },
+        );
+      
+        await User.updateMany(
+          { _id: { $in: admins } },
+          { $addToSet: { artistAdmin: artistId } },
+          { new: true, runValidators: true }
+        );
+
+        return updatedArtist;
+      }
+      throw new AuthenticationError('Not logged in');
+    },
+    addEvent: async (parent, { input }, context) => {
+      if(context.user) {
+        const event = await Event.create(input);
+
+        await Artist.updateMany(
+          { _id: { $in: input.artists} }, 
+          { $addToSet: { events: event._id } },
+          { new: true }
+        );
+    
+        return event;
+      }
+      throw new AuthenticationError('Not logged in');
+    },
+    updateEvent: async (parent, { input }, context) => {
+      if(context.user) {
+        return await Event.findByIdAndUpdate(input.eventId, input, { new: true });
+    
+      }
+      throw new AuthenticationError('Not logged in');
+    },
+    updateEventArtists: async (parent, { eventId, artists }, context) => {
+      if(context.user) {
+        const updatedEvent = await Event.findByIdAndUpdate(
+          eventId,
+          { $addToSet: { artists:{ $each: artists } } },
+          { new: true },
+        );
+
+        await Artist.updateMany(
+          { _id: { $in: artists} }, 
+          { $addToSet: { events: updatedEvent._id } },
+          { new: true }
+        );
+
+      return updatedEvent;
+      }
+      throw new AuthenticationError('Not logged in');
+    },
+  },
 };
 
 module.exports = resolvers;

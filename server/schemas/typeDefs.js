@@ -3,8 +3,6 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql`
   scalar JSON  
 
-  scalar Date
-
   type GeoJSON {
     type: String
     coordinates: [JSON]
@@ -48,13 +46,13 @@ const typeDefs = gql`
     venueName: String!
     venueAddress: String
     location: GeoJSON
-  }  
+  }
 
   type Comment {
     _id: ID
     commentBody: String!
     user: User!
-    createdAt: Date
+    createdAt: String
   }
 
   type Event {
@@ -62,7 +60,7 @@ const typeDefs = gql`
     artists: [Artist!]
     description: String!
     venue: Venue
-    date: Date!
+    date: String!
     startTime: String
     comments: [Comment]
     tickets: Ticket
@@ -79,7 +77,7 @@ const typeDefs = gql`
 
   type Order {
     _id: ID
-    purchaseDate: Date
+    purchaseDate: String
     tickets: [Ticket]
   }
 
@@ -93,6 +91,7 @@ const typeDefs = gql`
   }
 
   input ArtistInput {
+    admins: [ID!]
     artistName: String!
     artistBio: String
     genre: String!
@@ -103,26 +102,39 @@ const typeDefs = gql`
   input EventInput {
     artists: [ID!]
     description: String!
+    venue: VenueInput
+    date: String!
+    startTime: String
+  }
+
+  input VenueInput {
     venueName: String!
     venueAddress: String
-    type: String
-    coordinates: [JSON]
-    date: Date!
-    startTime: String
+    location: CoordinatesInput
   }
   
   input UpdateUserInput {
+    userId: ID!
     username: String
     email: String
-    address: String
-    coordinates: [JSON]
+    location: UserLocationInput
     userAvatar: String
     userCover: String
   }
 
+  input UserLocationInput {
+    address: String
+    location: CoordinatesInput
+  }
+
+  input CoordinatesInput {
+    type: String
+    coordinates: [JSON]
+  }
+
   input UpdateArtistInput {
+    artistId: ID!
     artistName: String
-    admins: [ID]
     artistBio: String
     genre: String
     artistAvatar: String
@@ -130,13 +142,11 @@ const typeDefs = gql`
   }
 
   input UpdateEventInput {
-    artists: [ID]
+    eventId: ID!
     description: String
-    date: Date
+    date: String
     startTime: String
-    venueName: String
-    venueAddress: String
-    coordinates: [JSON]
+    venue: VenueInput
   }
   
   type Query {
@@ -154,14 +164,16 @@ const typeDefs = gql`
   type Mutation {
     login(email: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
-    addArtist(input: ArtistInput): Artist
-    addEvent(input: EventInput): Event
-    addTicket(eventId: ID!, price: Float, quantity: Int): Event
-    addOrder(tickets: [ID!]): Order
     updateUser(input: UpdateUserInput): User
+    addArtist(input: ArtistInput): Artist
     updateArtist(input: UpdateArtistInput): Artist
+    updateArtistAdmins(artistId: ID!, admins: [ID!]): Artist
+    addEvent(input: EventInput): Event
     updateEvent(input: UpdateEventInput): Event
+    updateEventArtists(eventId: ID!, artists: [ID!]): Event
+    addTicket(eventId: ID!, price: Float, quantity: Int): Event
     updateTicket(tickedId: ID!, price: Float, quantity: Int): Ticket
+    addOrder(tickets: [ID!]): Order
     saveArtist(artistId: ID!): User
   }
 `;
