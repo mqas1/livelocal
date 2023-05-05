@@ -61,6 +61,9 @@ const eventSchema = new Schema(
     startTime: {
       type: String,
     },
+    eventCover: {
+      type: String,
+    },
     comments: [commentSchema],
     tickets: {
       type: Schema.Types.ObjectId,

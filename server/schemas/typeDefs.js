@@ -62,6 +62,7 @@ const typeDefs = gql`
     venue: Venue
     date: String!
     startTime: String
+    eventCover: String
     comments: [Comment]
     tickets: Ticket
     attendees: [User]
@@ -105,6 +106,7 @@ const typeDefs = gql`
     venue: VenueInput
     date: String!
     startTime: String
+    eventCover: String
   }
 
   input VenueInput {
@@ -146,6 +148,7 @@ const typeDefs = gql`
     description: String
     date: String
     startTime: String
+    eventCover: String
     venue: VenueInput
   }
   
