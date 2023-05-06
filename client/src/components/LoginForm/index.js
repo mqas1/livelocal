@@ -2,9 +2,27 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
+import styled from 'styled-components';
 
 import { LOGIN_USER } from '../../utils/mutations';
 import Auth from '../../utils/auth';
+
+const StyledLoginBtn = styled(Button)`
+  background-color: #50DD82;
+  border: 1px solid #50DD82;
+  color: #ffff;
+
+  &:hover {
+    background-color: #ffff;
+    color: #50DD82;
+    border: 1px solid #50DD82;
+  }
+
+  &.btn:disabled {
+    background-color: #50DD82;
+    border: 1px solid #50DD82;
+  }
+`;
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
@@ -79,12 +97,12 @@ const LoginForm = () => {
           />
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>
-        <Button
+        <StyledLoginBtn
           disabled={!(userFormData.email && userFormData.password)}
           type='submit'
           variant='success'>
           Submit
-        </Button>
+        </StyledLoginBtn>
       </Form>
     </>
   );

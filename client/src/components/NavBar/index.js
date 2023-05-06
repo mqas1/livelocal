@@ -27,7 +27,7 @@ const StyledBrand = styled(Navbar.Brand)`
     content: 'Local';
     padding-top: 1.75rem;
     padding-bottom: .5rem;
-    margin-left: -3.5rem; 
+    margin-left: -3.5rem;
 `;
 
 const StyledNavbar = styled(Navbar.Collapse)`
@@ -44,6 +44,16 @@ const StyledToggle = styled(Navbar.Toggle)`
   border-radius: 50%;
   font-weight: 700;
   font-size: 28px;
+`;
+
+const StyledPill = styled(Nav.Link)`
+  &.nav-link {
+    color: #6c757d;
+  }    
+
+  &.nav-link.active {
+    background-color: #838af3;
+  }
 `;
 
 const AppNavbar = () => {
@@ -176,10 +186,10 @@ const AppNavbar = () => {
             <Modal.Title id='signup-modal'>
               <Nav variant='pills'>
                 <Nav.Item>
-                  <Nav.Link eventKey='login'>Login</Nav.Link>
+                  <StyledPill eventKey='login'>Login</StyledPill>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey='signup'>Sign Up</Nav.Link>
+                  <StyledPill eventKey='signup'>Sign Up</StyledPill>
                 </Nav.Item>
               </Nav>
             </Modal.Title>
