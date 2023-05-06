@@ -1,9 +1,27 @@
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
+import styled from 'styled-components';
 
 import { ADD_USER } from '../../utils/mutations';
 import Auth from '../../utils/auth';
+
+const StyledSignUpBtn = styled(Button)`
+  background-color: #50DD82;
+  border: 1px solid #50DD82;
+  color: #ffff;
+
+  &:hover {
+    background-color: #ffff;
+    color: #50DD82;
+    border: 1px solid #50DD82;
+  }
+
+  &.btn:disabled {
+    background-color: #50DD82;
+    border: 1px solid #50DD82;
+  }
+`;
 
 const SignupForm = () => {
   // set initial form state
@@ -97,12 +115,12 @@ const SignupForm = () => {
           />
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>
-        <Button
+        <StyledSignUpBtn
           disabled={!(userFormData.username && userFormData.email && userFormData.password)}
           type='submit'
           variant='success'>
           Submit
-        </Button>
+        </StyledSignUpBtn>
       </Form>
     </>
   );

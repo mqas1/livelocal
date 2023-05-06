@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Home from './pages/Home';
 import AppNavbar from './components/NavBar';
+import Search from './pages/Search';
 
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -43,10 +44,10 @@ function App() {
             path='/' 
             element={<Home />} 
           />
-          {/* <Route 
+          <Route 
             path='/search' 
             element={<Search />} 
-          /> */}
+          />
           <Route 
             path='*'
             element={<h1 className='display-2'>Wrong page!</h1>}
