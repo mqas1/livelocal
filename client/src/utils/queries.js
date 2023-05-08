@@ -168,6 +168,7 @@ export const QUERY_SINGLE_EVENT = gql`
       }
       date
       startTime
+      eventCover
       comments {
         _id
         commentBody
@@ -209,6 +210,7 @@ export const QUERY_EVENTS = gql`
       }
       date
       startTime
+      eventCover
       tickets {
         _id
         price
