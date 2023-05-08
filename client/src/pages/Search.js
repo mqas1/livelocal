@@ -9,7 +9,6 @@ import {
   Row,
   ButtonGroup,
   Dropdown,
-  Spinner
 } from 'react-bootstrap';
 import styled from 'styled-components';
 
@@ -26,13 +25,16 @@ const StyledFormDiv = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  background-color: #50DD82;
-  border: 1px solid #ffff;
+  
+  &.btn-primary {
+    background-color: #50DD82 !important;
+    border: 1px solid #ffff !important;
+  }
 
-  &:hover {
-    background-color: #ffff;
-    color: #50DD82;
-    border: 1px solid #50DD82;
+  &.btn-primary:hover {
+    background-color: #ffff !important;
+    color: #50DD82 !important;
+    border: 1px solid #50DD82 !important;
   }
 
   @media(max-width: 768px) {
@@ -43,15 +45,20 @@ const StyledButton = styled(Button)`
 const StyledToggle = styled(Dropdown.Toggle)`
 
   &.btn-primary {
-    background-color: #838af3;
-    border: 1px solid #ffff;
-    color: #ffff;
+    background-color: #838af3 !important;
+    border: 1px solid #ffff !important;
+    color: #ffff !important;
   }
 
-  &.btn-primary:hover {
-    background-color: #ffff;
-    color: #838af3;
-    border: 1px solid #838af3;
+  &.btn-primary:hover,
+  &.dropdown-toggle.show {
+    background-color: #ffff !important;
+    color: #838af3 !important;
+    border: 1px solid #838af3 !important;
+  }
+
+  &.dropdown-toggle.show {
+    opacity: 0.75;
   }
 `;
 
@@ -60,17 +67,21 @@ function Search() {
   const { loading: artistsLoading, data: artistsData, error: artistsError } = useQuery(QUERY_ARTISTS);
   const [searchInput, setSearchInput] = useState('');
   const [searchType, setSearchType] = useState('Events')
+  const [getAllResults, setGetAllResults] = useState(true);
+  
+  let eventData = [];
+  let artistData = [];
+  const loading = artistsLoading || eventsLoading;
+  
+  if (getAllResults){
+    eventData = eventsData?.events || [];
+    artistData = artistsData?.artists || [];
+  }
+
   const handleFormSubmit = () => {
 
-  }
-  
-  const loading = artistsLoading || eventsLoading;
-  const eventData = eventsData?.events || {};
-  const artistData = artistsData?.artists || {};
-
-  console.log(artistData);
-  console.log(eventData);
-  
+  };
+ 
   const handleInputSelect = (event) => {
     setSearchType(event);
   };
@@ -80,7 +91,7 @@ function Search() {
       return <ArtistSearchContainer artistData={artistData} loading={loading}/>
       
     } else {
-      return <EventSearchContainer event={eventData} loading={loading}/>
+      return <EventSearchContainer eventData={eventData} loading={loading}/>
     }
   };
 
@@ -100,7 +111,7 @@ function Search() {
         </Container>
         <Container>
           <h1>{`Search for ${searchType}!`}</h1>
-          <Form onSubmit={handleFormSubmit}>
+          <Form onSubmit={handleFormSubmit(artistData)}>
             <Row>
               <Col xs={12} md={8}>
                 <Form.Control
@@ -113,7 +124,7 @@ function Search() {
                 />
               </Col>
               <Col xs={12} md={4}>
-                <StyledButton type='submit' variant='success' size='lg'>
+                <StyledButton type='submit' size='lg'>
                   Submit Search
                 </StyledButton>
               </Col>

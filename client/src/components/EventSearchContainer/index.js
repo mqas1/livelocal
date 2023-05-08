@@ -1,11 +1,18 @@
 import React from 'react';
+import { Spinner } from 'react-bootstrap';
+
 import EventCard from '../EventCard';
 
-function EventSearchContainer() {
+function EventSearchContainer({ eventData, loading }) {
+  if(loading) {
+    return <Spinner animation='border' role='status'>
+      <span className='visually-hidden'><h2>Loading...</h2></span>
+    </Spinner>
+  }
+  
   return (
     <>
-    <div>Events go here.</div>
-    <EventCard />
+    <EventCard eventData={eventData} loading={loading}/>
     </>
   );
 };

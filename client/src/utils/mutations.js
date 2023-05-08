@@ -111,6 +111,7 @@ export const ADD_EVENT = gql`
       }
       date
       startTime
+      eventCover
     }
   }
 `;
@@ -133,6 +134,7 @@ export const UPDATE_EVENT = gql`
       }
       date
       startTime
+      eventCover
     }
   }
 `;

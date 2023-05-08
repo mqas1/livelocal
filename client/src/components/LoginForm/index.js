@@ -8,19 +8,19 @@ import { LOGIN_USER } from '../../utils/mutations';
 import Auth from '../../utils/auth';
 
 const StyledLoginBtn = styled(Button)`
-  background-color: #50DD82;
-  border: 1px solid #50DD82;
-  color: #ffff;
+  background-color: #50DD82 !important;
+  border: 1px solid #50DD82 !important;
+  color: #ffff !important;
 
   &:hover {
-    background-color: #ffff;
-    color: #50DD82;
-    border: 1px solid #50DD82;
+    background-color: #ffff !important;
+    color: #50DD82 !important;
+    border: 1px solid #50DD82 !important;
   }
 
   &.btn:disabled {
-    background-color: #50DD82;
-    border: 1px solid #50DD82;
+    background-color: #50DD82 !important;
+    border: 1px solid #50DD82 !important;
   }
 `;
 
