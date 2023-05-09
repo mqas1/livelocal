@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import {
   Container,
   Col,
   Form,
   Button,
-  Card,
   Row,
-  ButtonGroup,
   Dropdown,
 } from 'react-bootstrap';
 import styled from 'styled-components';

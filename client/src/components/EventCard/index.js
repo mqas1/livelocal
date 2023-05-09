@@ -1,5 +1,7 @@
 import React from 'react';
-import { Card, CardGroup, CardImg, Container, Col, Row, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Card, CardGroup, Container, Col, Row, Button } from 'react-bootstrap';
+import { HiArrowLongRight } from 'react-icons/hi2';
 import styled from 'styled-components';
 import dateFormat from '../../utils/dateFormat';
 
@@ -40,6 +42,14 @@ const StyledHFour = styled.h4`
   margin: 0 .5rem 0 0;
 `;
 
+const StyledArtistLink = styled(Link)`
+  color: black;
+
+  &:hover {
+    color: black;
+  }
+`;
+
 const StyledContainer = styled(Container)`
   display: flex;
   flex-direction: column;
@@ -67,6 +77,19 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const StyledLink = styled(Link)`
+  color: #50DD82;
+  box-sizing: border-box;
+  border: 1px solid #50DD82;
+  text-decoration: none;
+  padding: .5rem;
+
+  &:hover {
+    cursor: pointer;
+    color: #50DD82;
+  }
+`;
+
 function EventCard({ eventData, loading }) {
   console.log(eventData);
   console.log(loading);
@@ -78,24 +101,26 @@ function EventCard({ eventData, loading }) {
     {eventData.map((event) => (
       <Col key={event._id} xs={12} md={6} lg={3} className='d-flex'>
       <StyledCard>
-        <StyledCardImg src={event.eventCover}/>
+        <StyledCardImg src={event?.eventCover}/>
         <Card.Header className='bg-white border-bottom-0'>
         <StyledHeader>
           {event.artists.map((artist) => (
-              <StyledHFour key={artist._id}>{artist.artistName}</StyledHFour>
+              <StyledHFour key={artist._id}>
+                <StyledArtistLink to={`/artist/${artist._id}`}>{artist.artistName}</StyledArtistLink>
+              </StyledHFour>
           ))}
           </StyledHeader>
         </Card.Header>
         <Card.Body className='d-flex flex-column'>
         <StyledContainer>
-          <p className='text-center'>{dateFormat(parseInt(event.date))}, {event.startTime}</p>
+          <p className='text-center'>{dateFormat(parseInt(event.date))}, {event?.startTime}</p>
           <p className='h5'>{event.venue.venueName}</p>
-          <p>{event.venue.venueAddress}</p>
+          <p>{event.venue?.venueAddress}</p>
           <p style={{ fontStyle: 'italic' }}>{event.description}</p>
         </StyledContainer>
         </Card.Body>
         <StyledFooter>
-        <StyledButton>More Info</StyledButton>
+        <StyledLink to={`/event/${event._id}`}>More Info <HiArrowLongRight /></StyledLink>
         </StyledFooter>
       </StyledCard>
       </Col>

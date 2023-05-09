@@ -13,7 +13,6 @@ function ArtistSearchContainer({ artistData, loading }) {
   
   return (
     <>
-    <div>Artists go here.</div>
     <ArtistCard artistData={artistData} loading={loading} />
     </>
   );
