@@ -92,7 +92,7 @@ const AppNavbar = () => {
     <>
       <Navbar collapseOnSelect bg='dark' expand='lg' variant='dark'>
         <Container fluid>
-          <StyledBrand as={Link} to='/search'>
+          <StyledBrand as={Link} to='/'>
             Live
           </StyledBrand>
           {Auth.loggedIn() ? (
@@ -122,7 +122,7 @@ const AppNavbar = () => {
                     Profile
                   </Nav.Link>
                   <Nav.Link 
-                  as={Link} to='/search'
+                  as={Link} to='/'
                   style={styles.linkTwo}
                   onMouseEnter={() => setColor(prevColor => ({
                     ...prevColor,
@@ -147,7 +147,7 @@ const AppNavbar = () => {
               ) : ( 
                 <>
                   <Nav.Link 
-                  as={Link} to='/search'
+                  as={Link} to='/'
                   style={styles.linkFour}
                   onMouseEnter={() => setColor(prevColor => ({
                     ...prevColor,
